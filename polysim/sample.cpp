@@ -1,25 +1,25 @@
 ///////////////////////////////////////////////////////////////////////
 //*                                                                 *//
-//*  File:      polymer.cpp                                         *//
+//*  File:      sample.cpp                                          *//
 //*  Author:    Matt Perrelli                                       *//
 //*                                                                 *//
-//*  This is the implementation code for the polymer class. This    *//
+//*  This is the implementation code for the sample class. This     *//
 //*  holds all the basic functionality for managing linear          *//
-//*  polymers.                                                      *//
+//*  samples.                                                       *//
 //*                                                                 *//
 ///////////////////////////////////////////////////////////////////////
 #include <iostream>
 #include <stdlib.h>
 #include <math.h>
 using namespace std;
-#include "polymer.h"
+#include "sample.h"
 #include "bead.h"
 
 
-// Constructor for a polymer. When a polymer is made it is
+// Constructor for a sample. When a sample is made it is
 // automatically given an initial bead at coordinates 0,0
 //
-polymer::polymer(void)
+sample::sample(void)
 {
 	beadCount = 0;
 	bead* newBead = new bead(0, 0);
@@ -27,17 +27,17 @@ polymer::polymer(void)
 	beadCount++;	
 }
 
-// Destructor for a polymer.
+// Destructor for a sample.
 //
-polymer::~polymer(void)
+sample::~sample(void)
 {
 	
 }
 
-// Adds a bead to the end of a polymer. Uses a random number to
+// Adds a bead to the end of a sample. Uses a random number to
 // select which direction to grow in
 //
-void polymer::addBead()
+void sample::addBead()
 {
 	int x = beads[beadCount - 1]->getX();
 	int y = beads[beadCount - 1]->getY();
@@ -73,7 +73,7 @@ void polymer::addBead()
 
 // A conveniance function to add multiple beads at once
 //
-void polymer::addBeads(int amount)
+void sample::addBeads(int amount)
 {
 	for(int i = 0; i < amount; i++)
 	{
@@ -83,16 +83,16 @@ void polymer::addBeads(int amount)
 
 // Returns the next available bead location in the array of beads
 //
-int polymer::getBeadCount()
+int sample::getBeadCount()
 {
 	return beadCount;
 }
 
 // Returns the Squared end to end distance. Calculated by running
 // the coordinate distance formula on the first and last beads
-// in a polymer.
+// in a sample.
 //
-double polymer::getSquareEndToEndDistance()
+double sample::getSquareEndToEndDistance()
 {
 	int x1 = beads[0]->getX();
 	int y1 = beads[0]->getY();
@@ -104,7 +104,7 @@ double polymer::getSquareEndToEndDistance()
 	return sqrt(distance);
 }
 
-double polymer::getXCM()
+double sample::getXCM()
 {
 	double sum = 0.0;
 
@@ -118,7 +118,7 @@ double polymer::getXCM()
 	return sum;
 }
 
-double polymer::getYCM()
+double sample::getYCM()
 {
 	double sum = 0.0;
 

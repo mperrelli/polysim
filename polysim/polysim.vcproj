@@ -179,7 +179,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\polymer.cpp"
+				RelativePath=".\sample.cpp"
 				>
 			</File>
 		</Filter>
@@ -193,7 +193,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\polymer.h"
+				RelativePath=".\sample.h"
 				>
 			</File>
 		</Filter>

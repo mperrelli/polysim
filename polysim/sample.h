@@ -1,9 +1,9 @@
 ///////////////////////////////////////////////////////////////////////
 //*                                                                 *//
-//*  File:      polymer.h                                           *//
+//*  File:      sample.h                                            *//
 //*  Author:    Matt Perrelli                                       *//
 //*                                                                 *//
-//*  Header file for the polymer class.                             *//
+//*  Header file for the sample class.                              *//
 //*                                                                 *//
 ///////////////////////////////////////////////////////////////////////
 #pragma once
@@ -11,7 +11,7 @@
 
 const int MAX_BEADS = 10000;
 
-class polymer
+class sample
 {
 private:
 	bead* beads[MAX_BEADS];
@@ -19,8 +19,8 @@ private:
 
 public:
 	// Constructor and destructor
-	polymer(void);
-	~polymer(void);
+	sample(void);
+	~sample(void);
 
 	// Functionality
 	void addBead();

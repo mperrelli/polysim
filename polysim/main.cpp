@@ -16,45 +16,45 @@
 #include <cstdlib>
 #include <cmath>
 using namespace std;
-#include "polymer.h"
+#include "sample.h"
 #include "bead.h"
 
-const int MAX_POLYMERS = 20000;
+const int MAX_SAMPLES = 20000;
 
 int main()
 {
-	// Defines a list of pointers to instances of the polymer class
-	polymer* polymers[MAX_POLYMERS];
+	// Defines a list of pointers to instances of the sample class
+	sample* samples[MAX_SAMPLES];
 
 	// Variables
-	int beadAmt, polymerAmt, pause;
+	int beadAmt, sampleAmt, pause;
 	double sum = 0.0, avg = 0.0, avgx = 0.0, avgy = 0.0, sumxcm = 0.0, sumycm = 0.0;
 
 	// User input
 	cout << "Bead Amount: ";
 	cin >> beadAmt;
-	cout << "Polymer Amt: ";
-	cin >> polymerAmt;
+	cout << "Sample Amount: ";
+	cin >> sampleAmt;
 
-	// Builds the polymers
-	for(int i = 0; i < polymerAmt; i++)
+	// Builds the samples
+	for(int i = 0; i < sampleAmt; i++)
 	{
-		polymer* p = new polymer();
-		polymers[i] = p;
-		polymers[i]->addBeads(beadAmt- 1);
+		sample* p = new sample();
+		samples[i] = p;
+		samples[i]->addBeads(beadAmt- 1);
 	}
 
 	// Gets the average of various properties.
-	for(int i = 0; i < polymerAmt; i++)
+	for(int i = 0; i < sampleAmt; i++)
 	{
-		sum += polymers[i]->getSquareEndToEndDistance();
-		sumxcm += polymers[i]->getXCM();
-		sumycm += polymers[i]->getYCM();
+		sum += samples[i]->getSquareEndToEndDistance();
+		sumxcm += samples[i]->getXCM();
+		sumycm += samples[i]->getYCM();
 	}
 
-	avg = sum / polymerAmt;
-	avgx = sumxcm / polymerAmt;
-	avgy = sumycm /polymerAmt;
+	avg = sum / sampleAmt;
+	avgx = sumxcm / sampleAmt;
+	avgy = sumycm /sampleAmt;
 
 	cout << "Average squared end to end distance: " << avg << "\n";
 	cout << "Average center of x: " <<  avgx << "\n";
@@ -66,11 +66,11 @@ int main()
 	sumycm = 0.0;
 
 	// Gets the standard deviation of the mean
-	for(int i = 0; i < polymerAmt; i++)
+	for(int i = 0; i < sampleAmt; i++)
 	{
-		sum += (pow((polymers[i]->getSquareEndToEndDistance() - avg), 2) / (beadAmt - 1));
-		sumxcm += (pow((polymers[i]->getXCM() - avgx), 2) / (beadAmt - 1));
-		sumycm += (pow((polymers[i]->getYCM() - avgy), 2) / (beadAmt - 1));
+		sum += (pow((samples[i]->getSquareEndToEndDistance() - avg), 2) / (beadAmt - 1));
+		sumxcm += (pow((samples[i]->getXCM() - avgx), 2) / (beadAmt - 1));
+		sumycm += (pow((samples[i]->getYCM() - avgy), 2) / (beadAmt - 1));
 	}
 
 	avg = sqrt(sum);
