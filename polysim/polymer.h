@@ -9,7 +9,7 @@
 #pragma once
 #include "bead.h"
 
-const int MAX_BEADS = 100;
+const int MAX_BEADS = 10000;
 
 class polymer
 {
@@ -28,5 +28,7 @@ public:
 
 	// Gets and sets
 	int getBeadCount();
-	double getSquaredRadiusGyration();
+	double getSquareEndToEndDistance();
+	double getXCM();
+	double getYCM();
 };

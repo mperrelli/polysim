@@ -11,6 +11,7 @@
 #include <iostream>
 #include <stdlib.h>
 #include <math.h>
+using namespace std;
 #include "polymer.h"
 #include "bead.h"
 
@@ -87,11 +88,11 @@ int polymer::getBeadCount()
 	return beadCount;
 }
 
-// Returns the Squared Radius of Gyration. Calculated by running
+// Returns the Squared end to end distance. Calculated by running
 // the coordinate distance formula on the first and last beads
 // in a polymer.
 //
-double polymer::getSquaredRadiusGyration()
+double polymer::getSquareEndToEndDistance()
 {
 	int x1 = beads[0]->getX();
 	int y1 = beads[0]->getY();
@@ -101,4 +102,32 @@ double polymer::getSquaredRadiusGyration()
 	double distance = ((x2 - x1)*(x2 - x1)) + ((y2 - y1)*(y2 - y1));
 
 	return sqrt(distance);
+}
+
+double polymer::getXCM()
+{
+	double sum = 0.0;
+
+	for(int i = 0; i < beadCount; i++)
+	{
+		sum += beads[i]->getX();
+	}
+
+	sum = sum/beadCount;
+
+	return sum;
+}
+
+double polymer::getYCM()
+{
+	double sum = 0.0;
+
+	for(int i = 0; i < beadCount; i++)
+	{
+		sum += beads[i]->getY();
+	}
+
+	sum = sum/beadCount;
+
+	return sum;
 }
