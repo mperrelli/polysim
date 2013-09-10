@@ -104,6 +104,10 @@ double sample::getSquareEndToEndDistance()
 	return sqrt(distance);
 }
 
+// Returns average X coordinate accross all beads
+// Shows us the X coordinate for the center of mass
+// of our sample.
+//
 double sample::getXCM()
 {
 	double sum = 0.0;
@@ -113,11 +117,15 @@ double sample::getXCM()
 		sum += beads[i]->getX();
 	}
 
-	sum = sum/beadCount;
+	sum = sum / beadCount;
 
 	return sum;
 }
 
+// Returns average Y coordinate accross all beads
+// Shows us the Y coordinate for the center of mass
+// of our sample.
+//
 double sample::getYCM()
 {
 	double sum = 0.0;
@@ -127,7 +135,88 @@ double sample::getYCM()
 		sum += beads[i]->getY();
 	}
 
-	sum = sum/beadCount;
+	sum = sum / beadCount;
 
 	return sum;
+}
+
+// Returns the tensor for matrix position 1,1
+//
+double sample::getTensor11()
+{
+	double XCM = getXCM();
+	double sum = 0.0;
+
+	for(int i = 0; i < beadCount; i++)
+	{
+		sum += beads[i]->getX() - XCM;
+	}
+
+	sum = sum / beadCount;
+
+	return sum;
+}
+
+// Returns the tensor for matrix position 1,2
+// Same as Tensor21
+//
+double sample::getTensor12()
+{
+	double XCM = getXCM();
+	double YCM = getYCM();
+	double sum = 0.0;
+
+	for(int i = 0; i < beadCount; i++)
+	{
+		sum += ((beads[i]->getX() - XCM) * (beads[i]->getY() - YCM));
+	}
+
+	sum = sum / beadCount;
+
+	return sum;
+}
+
+// Returns the tensor for matrix position 2,2
+//
+double sample::getTensor22()
+{
+	double YCM = getYCM();
+	double sum = 0.0;
+
+	for(int i = 0; i < beadCount; i++)
+	{
+		sum += beads[i]->getY() - YCM;
+	}
+
+	sum = sum / beadCount;
+
+	return sum;
+}
+
+// Returns Lamda1 which is the distance from the center of mass to the encompassing
+// circle on the x-axis around the sample
+//
+double sample::getLamda1()
+{
+	double a = getTensor11(), b = getTensor12(), c = getTensor22(), lamda, factor;
+
+	factor = (1.0 / 2) * sqrt((a*a) - (2 * a * c) + (c * c) + ((4 * (b * b))));
+
+	lamda = ((a + c) / 2) + factor;
+
+	return lamda;
+}
+
+// Returns Lamda2 which is the distance from the center of mass to the encompassing
+// circle on the y-axis around the sample
+//
+double sample::getLamda2()
+{
+	double a = getTensor11(), b = getTensor12(), c = getTensor22(), lamda, factor;
+
+	factor = (1.0 / 2) * sqrt((a*a) - (2 * a * c) + (c * c) + ((4 * (b * b))));
+
+	lamda = ((a + c) / 2) - factor;
+
+	return lamda;
 }

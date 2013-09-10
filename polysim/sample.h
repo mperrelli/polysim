@@ -31,4 +31,9 @@ public:
 	double getSquareEndToEndDistance();
 	double getXCM();
 	double getYCM();
+	double getTensor11();
+	double getTensor12();
+	double getTensor22();
+	double getLamda1();
+	double getLamda2();
 };
