@@ -16,6 +16,18 @@ class sample
 private:
 	bead* beads[MAX_BEADS];
 	int beadCount;
+	double XCM, YCM, tensor11, tensor12, tensor22, lamda1, lamda2; 
+
+	void runCalculations();
+
+	// Calculation functions
+	double calculateXCM();
+	double calculateYCM();
+	double calculateTensor11();
+	double calculateTensor12();
+	double calculateTensor22();
+	double calculateLamda1();
+	double calculateLamda2();
 
 public:
 	// Constructor and destructor

@@ -79,6 +79,8 @@ void sample::addBeads(int amount)
 	{
 		addBead();
 	}
+
+	runCalculations();
 }
 
 // Returns the next available bead location in the array of beads
@@ -108,7 +110,7 @@ double sample::getSquareEndToEndDistance()
 // Shows us the X coordinate for the center of mass
 // of our sample.
 //
-double sample::getXCM()
+double sample::calculateXCM()
 {
 	double sum = 0.0;
 
@@ -126,7 +128,7 @@ double sample::getXCM()
 // Shows us the Y coordinate for the center of mass
 // of our sample.
 //
-double sample::getYCM()
+double sample::calculateYCM()
 {
 	double sum = 0.0;
 
@@ -142,9 +144,8 @@ double sample::getYCM()
 
 // Returns the tensor for matrix position 1,1
 //
-double sample::getTensor11()
+double sample::calculateTensor11()
 {
-	double XCM = getXCM();
 	double sum = 0.0;
 
 	for(int i = 0; i < beadCount; i++)
@@ -160,10 +161,8 @@ double sample::getTensor11()
 // Returns the tensor for matrix position 1,2
 // Same as Tensor21
 //
-double sample::getTensor12()
+double sample::calculateTensor12()
 {
-	double XCM = getXCM();
-	double YCM = getYCM();
 	double sum = 0.0;
 
 	for(int i = 0; i < beadCount; i++)
@@ -178,9 +177,8 @@ double sample::getTensor12()
 
 // Returns the tensor for matrix position 2,2
 //
-double sample::getTensor22()
+double sample::calculateTensor22()
 {
-	double YCM = getYCM();
 	double sum = 0.0;
 
 	for(int i = 0; i < beadCount; i++)
@@ -196,9 +194,9 @@ double sample::getTensor22()
 // Returns Lamda1 which is the distance from the center of mass to the encompassing
 // circle on the x-axis around the sample
 //
-double sample::getLamda1()
+double sample::calculateLamda1()
 {
-	double a = getTensor11(), b = getTensor12(), c = getTensor22(), lamda, factor;
+	double a = tensor11, b = tensor12, c = tensor22, lamda, factor;
 
 	factor = (1.0 / 2) * sqrt((a*a) - (2 * a * c) + (c * c) + ((4 * (b * b))));
 
@@ -210,13 +208,63 @@ double sample::getLamda1()
 // Returns Lamda2 which is the distance from the center of mass to the encompassing
 // circle on the y-axis around the sample
 //
-double sample::getLamda2()
+double sample::calculateLamda2()
 {
-	double a = getTensor11(), b = getTensor12(), c = getTensor22(), lamda, factor;
+	double a = tensor11, b = tensor12, c = tensor22, lamda, factor;
 
 	factor = (1.0 / 2) * sqrt((a*a) - (2 * a * c) + (c * c) + ((4 * (b * b))));
 
 	lamda = ((a + c) / 2) - factor;
 
 	return lamda;
+}
+
+// Runs all the necessary calculations on the sample and stores them.
+//
+void sample::runCalculations()
+{
+	XCM = calculateXCM();
+	YCM = calculateYCM();
+	tensor11 = calculateTensor11();
+	tensor12 = calculateTensor12();
+	tensor22 = calculateTensor22();
+	lamda1 = calculateLamda1();
+	lamda2 = calculateLamda2();
+}
+
+// Below this point are all get functions
+
+double sample::getXCM()
+{
+	return XCM;
+}
+
+double sample::getYCM()
+{
+	return YCM;
+}
+
+double sample::getTensor11()
+{
+	return tensor11;
+}
+
+double sample::getTensor12()
+{
+	return tensor12;
+}
+
+double sample::getTensor22()
+{
+	return tensor22;
+}
+
+double sample::getLamda1()
+{
+	return lamda1;
+}
+
+double sample::getLamda2()
+{
+	return lamda2;
 }
