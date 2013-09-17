@@ -29,6 +29,7 @@ int main()
 	// Variables
 	int beadAmt, sampleAmt, pause;
 	double sum = 0.0, avg = 0.0, avgx = 0.0, avgy = 0.0, sumxcm = 0.0, sumycm = 0.0;
+	double lamda1[MAX_SAMPLES], lamda2[MAX_SAMPLES];
 
 	// User input
 	cout << "Bead Amount: ";
@@ -80,6 +81,28 @@ int main()
 	cout << "Standard deviation of mean of squared end to end distance: " << avg << "\n";
 	cout << "Standard deviation of mean of center of x: " <<  avgx << "\n";
 	cout << "Standard deviation of mean of center of y: " <<  avgy << "\n";
+
+	// Creates arrays for the lamdas for every sample and displays it.
+	for(int i = 0; i < sampleAmt; i++)
+	{
+		if(samples[i]->getLamda1() > samples[i]->getLamda2())
+		{
+			lamda1[i] = samples[i]->getLamda1();
+			lamda2[i] = samples[i]->getLamda2();
+		}
+		else
+		{
+			lamda2[i] = samples[i]->getLamda1();
+			lamda1[i] = samples[i]->getLamda2();
+		}
+	}
+
+	for(int i = 0; i < sampleAmt; i++)
+	{
+		cout << "Sample [" << i + 1 << "]\n";
+		cout << "Lamda1: " << lamda1[i] << "\n";
+		cout << "Lamda2: " << lamda2[i] << "\n\n";
+	}
 
 	// Wait
 	cin >> pause;
