@@ -14,9 +14,13 @@ const int MAX_BEADS = 10000;
 class sample
 {
 private:
-	bead* beads[MAX_BEADS];
+	int beadsX[MAX_BEADS];
+	int beadsY[MAX_BEADS];
+
 	int beadCount;
-	double XCM, YCM, tensor11, tensor12, tensor22, lamda1, lamda2; 
+
+	double XCM, YCM, tensor11, tensor12, tensor22, lamda1, lamda2, 
+		asphericity, radiusofGyration;
 
 	void runCalculations();
 
@@ -28,6 +32,8 @@ private:
 	double calculateTensor22();
 	double calculateLamda1();
 	double calculateLamda2();
+	double calculateAsphericity();
+	double calculateRadiusofGyration();
 
 public:
 	// Constructor and destructor
@@ -48,4 +54,6 @@ public:
 	double getTensor22();
 	double getLamda1();
 	double getLamda2();
+	double getAsphericity();
+	double getRadiusofGyration();
 };

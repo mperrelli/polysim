@@ -13,7 +13,6 @@
 #include <math.h>
 using namespace std;
 #include "sample.h"
-#include "bead.h"
 
 
 // Constructor for a sample. When a sample is made it is
@@ -22,8 +21,8 @@ using namespace std;
 sample::sample(void)
 {
 	beadCount = 0;
-	bead* newBead = new bead(0, 0);
-	beads[beadCount] = newBead;
+	beadsX[beadCount] = 0;
+	beadsY[beadCount] = 0;
 	beadCount++;	
 }
 
@@ -39,38 +38,41 @@ sample::~sample(void)
 //
 void sample::addBead()
 {
-	int x = beads[beadCount - 1]->getX();
-	int y = beads[beadCount - 1]->getY();
+	int x = beadsX[beadCount - 1];
+	int y = beadsY[beadCount - 1];
 
 	int growDirection = rand() % 4 + 1;
+
+	cout << "direction: " << growDirection << " : ";
 
 	switch(growDirection)
 	{
 	case 1:
 		// Grow North
-		y++;
+		y = y + 1;
 
 	case 2:
 		// Grow South
-		y--;
+		y = y - 1;
 
 	case 3:
 		// Grow East
-		x++;
+		x = x + 1;
 
 	case 4:
 		// Grow West
-		x--;
+		x = x - 1;
 
 	default:;
 
 	}
 
-	bead *newBead = new bead(x, y);
-	beads[beadCount] = newBead;
+	beadsX[beadCount] = x;
+	beadsY[beadCount] = y;
 	beadCount++;
-}
 
+	cout << beadCount << " (" << x << ", " << y << ") \n";
+}
 // A conveniance function to add multiple beads at once
 //
 void sample::addBeads(int amount)
@@ -96,10 +98,10 @@ int sample::getBeadCount()
 //
 double sample::getSquareEndToEndDistance()
 {
-	int x1 = beads[0]->getX();
-	int y1 = beads[0]->getY();
-	int x2 = beads[beadCount - 1]->getX();
-	int y2 = beads[beadCount - 1]->getY();
+	int x1 = beadsX[0];
+	int y1 = beadsY[0];
+	int x2 = beadsX[beadCount - 1];
+	int y2 = beadsY[beadCount - 1];
 
 	double distance = ((x2 - x1)*(x2 - x1)) + ((y2 - y1)*(y2 - y1));
 
@@ -116,7 +118,7 @@ double sample::calculateXCM()
 
 	for(int i = 0; i < beadCount; i++)
 	{
-		sum += beads[i]->getX();
+		sum += beadsX[i];
 	}
 
 	sum = sum / beadCount;
@@ -134,7 +136,7 @@ double sample::calculateYCM()
 
 	for(int i = 0; i < beadCount; i++)
 	{
-		sum += beads[i]->getY();
+		sum += beadsY[i];
 	}
 
 	sum = sum / beadCount;
@@ -150,7 +152,7 @@ double sample::calculateTensor11()
 
 	for(int i = 0; i < beadCount; i++)
 	{
-		sum += beads[i]->getX() - XCM;
+		sum += pow((beadsX[i] - XCM), 2.0);
 	}
 
 	sum = sum / beadCount;
@@ -167,7 +169,7 @@ double sample::calculateTensor12()
 
 	for(int i = 0; i < beadCount; i++)
 	{
-		sum += ((beads[i]->getX() - XCM) * (beads[i]->getY() - YCM));
+		sum += ((beadsX[i] - XCM) * (beadsY[i] - YCM));
 	}
 
 	sum = sum / beadCount;
@@ -183,7 +185,7 @@ double sample::calculateTensor22()
 
 	for(int i = 0; i < beadCount; i++)
 	{
-		sum += beads[i]->getY() - YCM;
+		sum += pow((beadsY[i] - YCM), 2.0);
 	}
 
 	sum = sum / beadCount;
@@ -219,6 +221,24 @@ double sample::calculateLamda2()
 	return lamda;
 }
 
+double sample::calculateAsphericity()
+{
+	double asphericity;
+
+	asphericity = pow((lamda2 - lamda1), 2.0) / pow((lamda2 + lamda1), 2.0);
+
+	return asphericity;
+}
+
+double sample::calculateRadiusofGyration()
+{
+	double rog;
+
+	rog = lamda2 + lamda1;
+
+	return rog;
+}
+
 // Runs all the necessary calculations on the sample and stores them.
 //
 void sample::runCalculations()
@@ -230,6 +250,8 @@ void sample::runCalculations()
 	tensor22 = calculateTensor22();
 	lamda1 = calculateLamda1();
 	lamda2 = calculateLamda2();
+	asphericity = calculateAsphericity();
+	radiusofGyration = calculateRadiusofGyration();
 }
 
 // Below this point are all get functions
@@ -267,4 +289,13 @@ double sample::getLamda1()
 double sample::getLamda2()
 {
 	return lamda2;
+}
+double sample::getAsphericity()
+{
+	return asphericity;
+}
+
+double sample::getRadiusofGyration()
+{
+	return radiusofGyration;
 }

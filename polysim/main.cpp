@@ -17,7 +17,6 @@
 #include <cmath>
 using namespace std;
 #include "sample.h"
-#include "bead.h"
 
 const int MAX_SAMPLES = 20000;
 
@@ -42,7 +41,7 @@ int main()
 	{
 		sample* p = new sample();
 		samples[i] = p;
-		samples[i]->addBeads(beadAmt- 1);
+		samples[i]->addBeads(beadAmt - 1);
 	}
 
 	// Gets the average of various properties.
@@ -78,32 +77,74 @@ int main()
 	avgx = sqrt(sumxcm);
 	avgy = sqrt(sumycm);
 
+	// Reset sums for use again
+	sum = 0.0;
+	sumxcm = 0.0;
+	sumycm = 0.0;
+
 	cout << "Standard deviation of mean of squared end to end distance: " << avg << "\n";
 	cout << "Standard deviation of mean of center of x: " <<  avgx << "\n";
 	cout << "Standard deviation of mean of center of y: " <<  avgy << "\n";
 
-	// Creates arrays for the lamdas for every sample and displays it.
+	// Gets average lamda1 and lamda2
 	for(int i = 0; i < sampleAmt; i++)
 	{
-		if(samples[i]->getLamda1() > samples[i]->getLamda2())
-		{
-			lamda1[i] = samples[i]->getLamda1();
-			lamda2[i] = samples[i]->getLamda2();
-		}
-		else
-		{
-			lamda2[i] = samples[i]->getLamda1();
-			lamda1[i] = samples[i]->getLamda2();
-		}
+		sum += samples[i]->getLamda1();
+		sumxcm += samples[i]->getLamda2();
 	}
 
+	avg = sum /sampleAmt;
+	avgx = sumxcm / sampleAmt;
+
+	cout << "Average Lamda1: " << avg << "\n";
+	cout << "Average Lamda2: " << avgx << "\n";
+
+	sum = 0.0;
+	sumxcm = 0.0;
+	sumycm = 0.0;
+
+	// Gets the standard deviation of the mean of lamdas
 	for(int i = 0; i < sampleAmt; i++)
 	{
-		cout << "Sample [" << i + 1 << "]\n";
-		cout << "Lamda1: " << lamda1[i] << "\n";
-		cout << "Lamda2: " << lamda2[i] << "\n\n";
+		sumxcm += (pow((samples[i]->getLamda1() - avg), 2) / (beadAmt - 1));
+		sumycm += (pow((samples[i]->getLamda2() - avgx), 2) / (beadAmt - 1));
 	}
 
+	cout << "Standard deviation of the average lamda1: " << sumxcm << "\n";
+	cout << "Standard deviation of the average lamda2: " << sumycm << "\n";
+
+	// Reset sums for use again
+	sum = 0.0;
+	sumxcm = 0.0;
+	sumycm = 0.0;
+
+	// gets average asphoricity and radius of gyration
+	for(int i = 0; i < sampleAmt; i++)
+	{
+		sum += samples[i]->getAsphericity();
+		sumxcm += samples[i]->getRadiusofGyration();
+	}
+
+	avg = sum / sampleAmt;
+	avgx = sum / sampleAmt;
+
+	cout << "Average Asphericity: " << avg << "\n";
+	cout << "Average Radius of Gyration: " << avgx << "\n";
+
+	// Reset sums for use again
+	sum = 0.0;
+	sumxcm = 0.0;
+	sumycm = 0.0;
+
+	// Gets the standard deviation of the mean of asphericity and radius of gyration
+	for(int i = 0; i < sampleAmt; i++)
+	{
+		sumxcm += (pow((samples[i]->getAsphericity() - avg), 2) / (beadAmt - 1));
+		sumycm += (pow((samples[i]->getRadiusofGyration() - avgx), 2) / (beadAmt - 1));
+	}
+
+	cout << "Standard deviation of the average asphericity: " << sumxcm << "\n";
+	cout << "Standard deviation of the average radius of gyration: " << sumycm << "\n";
 	// Wait
 	cin >> pause;
 
