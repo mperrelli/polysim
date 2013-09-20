@@ -27,8 +27,28 @@ int main()
 
 	// Variables
 	int beadAmt, sampleAmt, pause;
+
+	// Temporary variables
 	double sum = 0.0, avg = 0.0, avgx = 0.0, avgy = 0.0, sumxcm = 0.0, sumycm = 0.0;
-	double lamda1[MAX_SAMPLES], lamda2[MAX_SAMPLES];
+
+	// final avg vars
+	double avgSquareEndToEndDistance = 0.0,
+		   avgXCM = 0.0,
+		   avgYCM = 0.0,
+		   avgLamda1 = 0.0,
+		   avgLamda2 = 0.0,
+		   avgAsphericity = 0.0,
+		   avgRadiusOfGyration = 0.0;
+
+	// final standard deviations
+	double sdSquareEndToEndDistance = 0.0,
+		   sdXCM = 0.0,
+		   sdYCM = 0.0,
+		   sdLamda1 = 0.0,
+		   sdLamda2 = 0.0,
+		   sdAsphericity = 0.0,
+		   sdRadiusOfGyration = 0.0;
+
 
 	// User input
 	cout << "Bead Amount: ";
@@ -52,13 +72,13 @@ int main()
 		sumycm += samples[i]->getYCM();
 	}
 
-	avg = sum / sampleAmt;
-	avgx = sumxcm / sampleAmt;
-	avgy = sumycm /sampleAmt;
+	avgSquareEndToEndDistance = sum / sampleAmt;
+	avgXCM = sumxcm / sampleAmt;
+	avgYCM = sumycm / sampleAmt;
 
-	cout << "Average squared end to end distance: " << avg << "\n";
-	cout << "Average center of x: " <<  avgx << "\n";
-	cout << "Average center of y: " <<  avgy << "\n";
+	cout << "Average squared end to end distance: " << avgSquareEndToEndDistance << "\n";
+	cout << "Average center of x: " <<  avgXCM << "\n";
+	cout << "Average center of y: " <<  avgYCM << "\n";
 
 	// Reset sums for use again
 	sum = 0.0;
@@ -73,18 +93,18 @@ int main()
 		sumycm += (pow((samples[i]->getYCM() - avgy), 2) / (beadAmt - 1));
 	}
 
-	avg = sqrt(sum);
-	avgx = sqrt(sumxcm);
-	avgy = sqrt(sumycm);
+	sdSquareEndToEndDistance = sqrt(sum);
+	sdXCM = sqrt(sumxcm);
+	sdYCM = sqrt(sumycm);
 
 	// Reset sums for use again
 	sum = 0.0;
 	sumxcm = 0.0;
 	sumycm = 0.0;
 
-	cout << "Standard deviation of mean of squared end to end distance: " << avg << "\n";
-	cout << "Standard deviation of mean of center of x: " <<  avgx << "\n";
-	cout << "Standard deviation of mean of center of y: " <<  avgy << "\n";
+	cout << "Standard deviation of mean of squared end to end distance: " << sdSquareEndToEndDistance << "\n";
+	cout << "Standard deviation of mean of center of x: " <<  sdXCM << "\n";
+	cout << "Standard deviation of mean of center of y: " <<  sdYCM << "\n";
 
 	// Gets average lamda1 and lamda2
 	for(int i = 0; i < sampleAmt; i++)
@@ -93,12 +113,13 @@ int main()
 		sumxcm += samples[i]->getLamda2();
 	}
 
-	avg = sum /sampleAmt;
-	avgx = sumxcm / sampleAmt;
+	avgLamda1 = sum /sampleAmt;
+	avgLamda2 = sumxcm / sampleAmt;
 
-	cout << "Average Lamda1: " << avg << "\n";
-	cout << "Average Lamda2: " << avgx << "\n";
+	cout << "Average Lamda1: " << avgLamda1 << "\n";
+	cout << "Average Lamda2: " << avgLamda2 << "\n";
 
+	// Reset sums for use again
 	sum = 0.0;
 	sumxcm = 0.0;
 	sumycm = 0.0;
@@ -110,8 +131,11 @@ int main()
 		sumycm += (pow((samples[i]->getLamda2() - avgx), 2) / (beadAmt - 1));
 	}
 
-	cout << "Standard deviation of the average lamda1: " << sumxcm << "\n";
-	cout << "Standard deviation of the average lamda2: " << sumycm << "\n";
+	sdLamda1 = sqrt(sumxcm);
+	sdLamda2 = sqrt(sumycm);
+
+	cout << "Standard deviation of the average lamda1: " << sdLamda1 << "\n";
+	cout << "Standard deviation of the average lamda2: " << sdLamda2 << "\n";
 
 	// Reset sums for use again
 	sum = 0.0;
@@ -125,11 +149,11 @@ int main()
 		sumxcm += samples[i]->getRadiusofGyration();
 	}
 
-	avg = sum / sampleAmt;
-	avgx = sum / sampleAmt;
+	avgAsphericity = sum / sampleAmt;
+	avgRadiusOfGyration = sum / sampleAmt;
 
-	cout << "Average Asphericity: " << avg << "\n";
-	cout << "Average Radius of Gyration: " << avgx << "\n";
+	cout << "Average Asphericity: " << avgAsphericity << "\n";
+	cout << "Average Radius of Gyration: " << avgRadiusOfGyration << "\n";
 
 	// Reset sums for use again
 	sum = 0.0;
@@ -143,8 +167,12 @@ int main()
 		sumycm += (pow((samples[i]->getRadiusofGyration() - avgx), 2) / (beadAmt - 1));
 	}
 
-	cout << "Standard deviation of the average asphericity: " << sumxcm << "\n";
-	cout << "Standard deviation of the average radius of gyration: " << sumycm << "\n";
+	sdAsphericity = sqrt(sumxcm);
+	sdRadiusOfGyration = sqrt(sumycm);
+
+	cout << "Standard deviation of the average asphericity: " << sdAsphericity << "\n";
+	cout << "Standard deviation of the average radius of gyration: " << sdRadiusOfGyration << "\n";
+
 	// Wait
 	cin >> pause;
 

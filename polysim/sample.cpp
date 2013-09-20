@@ -43,25 +43,27 @@ void sample::addBead()
 
 	int growDirection = rand() % 4 + 1;
 
-	cout << "direction: " << growDirection << " : ";
-
 	switch(growDirection)
 	{
 	case 1:
 		// Grow North
 		y = y + 1;
+		break;
 
 	case 2:
 		// Grow South
 		y = y - 1;
+		break;
 
 	case 3:
 		// Grow East
 		x = x + 1;
+		break;
 
 	case 4:
 		// Grow West
 		x = x - 1;
+		break;
 
 	default:;
 
@@ -70,8 +72,6 @@ void sample::addBead()
 	beadsX[beadCount] = x;
 	beadsY[beadCount] = y;
 	beadCount++;
-
-	cout << beadCount << " (" << x << ", " << y << ") \n";
 }
 // A conveniance function to add multiple beads at once
 //
@@ -221,6 +221,8 @@ double sample::calculateLamda2()
 	return lamda;
 }
 
+// Returns the Asphericity which is the measure of how round a polymer is.
+//
 double sample::calculateAsphericity()
 {
 	double asphericity;
