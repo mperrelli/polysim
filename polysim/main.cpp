@@ -15,6 +15,8 @@
 #include <iostream>
 #include <cstdlib>
 #include <cmath>
+#include <fstream>
+#include <iomanip>
 using namespace std;
 #include "sample.h"
 
@@ -25,11 +27,14 @@ int main()
 	// Defines a list of pointers to instances of the sample class
 	sample* samples[MAX_SAMPLES];
 
+	// Output file stream
+	ofstream outputFile;
+
 	// Variables
 	int beadAmt, sampleAmt, pause;
 
 	// Temporary variables
-	double sum = 0.0, avg = 0.0, avgx = 0.0, avgy = 0.0, sumxcm = 0.0, sumycm = 0.0;
+	double sum = 0.0, sumxcm = 0.0, sumycm = 0.0;
 
 	// final avg vars
 	double avgSquareEndToEndDistance = 0.0,
@@ -49,6 +54,8 @@ int main()
 		   sdAsphericity = 0.0,
 		   sdRadiusOfGyration = 0.0;
 
+	// Set format
+	cout.setf(ios::fixed);
 
 	// User input
 	cout << "Bead Amount: ";
@@ -88,9 +95,9 @@ int main()
 	// Gets the standard deviation of the mean
 	for(int i = 0; i < sampleAmt; i++)
 	{
-		sum += (pow((samples[i]->getSquareEndToEndDistance() - avg), 2) / (beadAmt - 1));
-		sumxcm += (pow((samples[i]->getXCM() - avgx), 2) / (beadAmt - 1));
-		sumycm += (pow((samples[i]->getYCM() - avgy), 2) / (beadAmt - 1));
+		sum += (pow((samples[i]->getSquareEndToEndDistance() - avgSquareEndToEndDistance), 2) / (beadAmt - 1));
+		sumxcm += (pow((samples[i]->getXCM() - avgXCM), 2) / (beadAmt - 1));
+		sumycm += (pow((samples[i]->getYCM() - avgYCM), 2) / (beadAmt - 1));
 	}
 
 	sdSquareEndToEndDistance = sqrt(sum);
@@ -127,8 +134,8 @@ int main()
 	// Gets the standard deviation of the mean of lamdas
 	for(int i = 0; i < sampleAmt; i++)
 	{
-		sumxcm += (pow((samples[i]->getLamda1() - avg), 2) / (beadAmt - 1));
-		sumycm += (pow((samples[i]->getLamda2() - avgx), 2) / (beadAmt - 1));
+		sumxcm += (pow((samples[i]->getLamda1() - avgLamda1), 2) / (beadAmt * (beadAmt - 1)));
+		sumycm += (pow((samples[i]->getLamda2() - avgLamda2), 2) / (beadAmt * (beadAmt - 1)));
 	}
 
 	sdLamda1 = sqrt(sumxcm);
@@ -150,7 +157,7 @@ int main()
 	}
 
 	avgAsphericity = sum / sampleAmt;
-	avgRadiusOfGyration = sum / sampleAmt;
+	avgRadiusOfGyration = sumxcm / sampleAmt;
 
 	cout << "Average Asphericity: " << avgAsphericity << "\n";
 	cout << "Average Radius of Gyration: " << avgRadiusOfGyration << "\n";
@@ -163,8 +170,8 @@ int main()
 	// Gets the standard deviation of the mean of asphericity and radius of gyration
 	for(int i = 0; i < sampleAmt; i++)
 	{
-		sumxcm += (pow((samples[i]->getAsphericity() - avg), 2) / (beadAmt - 1));
-		sumycm += (pow((samples[i]->getRadiusofGyration() - avgx), 2) / (beadAmt - 1));
+		sumxcm += (pow((samples[i]->getAsphericity() - avgAsphericity), 2) / (beadAmt * (beadAmt - 1)));
+		sumycm += (pow((samples[i]->getRadiusofGyration() - avgRadiusOfGyration), 2) / (beadAmt * (beadAmt - 1)));
 	}
 
 	sdAsphericity = sqrt(sumxcm);
@@ -172,6 +179,33 @@ int main()
 
 	cout << "Standard deviation of the average asphericity: " << sdAsphericity << "\n";
 	cout << "Standard deviation of the average radius of gyration: " << sdRadiusOfGyration << "\n";
+
+	// Build output
+	outputFile.open("output.txt");
+
+	if(outputFile.fail())
+	{
+		cout << "Failed to open output file.\n";
+		exit(1);
+	}
+
+	cout << "\n\nQuantity" << setw(13) << "Average" << setw(27) << "Standard Deviation\n";
+	cout << "-----------------------------------------------\n";
+	cout << "Lamda1  " << setw(15) << setprecision(6) << avgLamda1 << setw(18) << setprecision(6) << sdLamda1 << endl;
+	cout << "Lamda2  " << setw(15) << setprecision(6) << avgLamda2 << setw(18) << setprecision(6) << sdLamda2 << endl;
+	cout << "s^2     " << setw(15) << setprecision(6) << avgRadiusOfGyration << setw(18) << setprecision(6) << sdRadiusOfGyration << endl;
+	cout << "A       " << setw(15) << setprecision(6) << avgAsphericity << setw(18) << setprecision(6) << sdAsphericity << endl;
+
+	outputFile << "Lamda1\tLamda2\ts^2\tA\n";
+
+	for(int i = 0; i < sampleAmt; i++)
+	{
+		outputFile << samples[i]->getLamda1() << "\t" << samples[i]->getLamda2()
+			<< "\t" << samples[i]->getRadiusofGyration() << "\t" << samples[i]->getAsphericity()
+			<< endl;
+	}
+
+	outputFile.close();
 
 	// Wait
 	cin >> pause;
