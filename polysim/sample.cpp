@@ -227,7 +227,7 @@ double sample::calculateAsphericity()
 {
 	double asphericity;
 
-	asphericity = pow((lamda2 - lamda1), 2.0) / pow((lamda2 + lamda1), 2.0);
+	asphericity = pow((lamda1 - lamda2), 2.0) / pow((lamda2 + lamda1), 2.0);
 
 	return asphericity;
 }
