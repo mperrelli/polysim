@@ -123,9 +123,6 @@ int main()
 	avgLamda1 = sum /sampleAmt;
 	avgLamda2 = sumxcm / sampleAmt;
 
-	cout << "Average Lamda1: " << avgLamda1 << "\n";
-	cout << "Average Lamda2: " << avgLamda2 << "\n";
-
 	// Reset sums for use again
 	sum = 0.0;
 	sumxcm = 0.0;
@@ -140,9 +137,6 @@ int main()
 
 	sdLamda1 = sqrt(sumxcm);
 	sdLamda2 = sqrt(sumycm);
-
-	cout << "Standard deviation of the average lamda1: " << sdLamda1 << "\n";
-	cout << "Standard deviation of the average lamda2: " << sdLamda2 << "\n";
 
 	// Reset sums for use again
 	sum = 0.0;
@@ -159,9 +153,6 @@ int main()
 	avgAsphericity = sum / sampleAmt;
 	avgRadiusOfGyration = sumxcm / sampleAmt;
 
-	cout << "Average Asphericity: " << avgAsphericity << "\n";
-	cout << "Average Radius of Gyration: " << avgRadiusOfGyration << "\n";
-
 	// Reset sums for use again
 	sum = 0.0;
 	sumxcm = 0.0;
@@ -176,9 +167,6 @@ int main()
 
 	sdAsphericity = sqrt(sumxcm);
 	sdRadiusOfGyration = sqrt(sumycm);
-
-	cout << "Standard deviation of the average asphericity: " << sdAsphericity << "\n";
-	cout << "Standard deviation of the average radius of gyration: " << sdRadiusOfGyration << "\n";
 
 	// Build output
 	outputFile.open("output.txt");
