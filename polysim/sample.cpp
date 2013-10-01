@@ -24,6 +24,7 @@ sample::sample(void)
 	beadsX[beadCount] = 0;
 	beadsY[beadCount] = 0;
 	beadCount++;	
+	counter1 = 0, counter2 = 0, counter3 = 0, counter4 = 0;
 }
 
 // Destructor for a sample.
@@ -48,21 +49,25 @@ void sample::addBead()
 	case 1:
 		// Grow North
 		y = y + 1;
+		counter1++;
 		break;
 
 	case 2:
 		// Grow South
 		y = y - 1;
+		counter2++;
 		break;
 
 	case 3:
 		// Grow East
 		x = x + 1;
+		counter3++;
 		break;
 
 	case 4:
 		// Grow West
 		x = x - 1;
+		counter4++;
 		break;
 
 	default:;
@@ -250,8 +255,23 @@ void sample::runCalculations()
 	tensor11 = calculateTensor11();
 	tensor12 = calculateTensor12();
 	tensor22 = calculateTensor22();
-	lamda1 = calculateLamda1();
-	lamda2 = calculateLamda2();
+
+	// Stores the lamdas in temp variables
+	double temp1 = calculateLamda1();
+	double temp2 = calculateLamda2();
+
+	// Puts the greater lamda in lamda1 and the lesser in lamda2
+	if(temp1 > temp2)
+	{
+		lamda1 = temp1;
+		lamda2 = temp2;
+	}
+	else
+	{
+		lamda1 = temp2;
+		lamda2 = temp1;
+	}
+
 	asphericity = calculateAsphericity();
 	radiusofGyration = calculateRadiusofGyration();
 }

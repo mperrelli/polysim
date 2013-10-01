@@ -34,16 +34,20 @@ int main()
 	int beadAmt, sampleAmt, pause;
 
 	// Temporary variables
-	double sum = 0.0, sumxcm = 0.0, sumycm = 0.0;
+	double sum = 0.0, sum2 = 0.0, sumxcm = 0.0, sumycm = 0.0;
 
 	// final avg vars
 	double avgSquareEndToEndDistance = 0.0,
 		   avgXCM = 0.0,
 		   avgYCM = 0.0,
 		   avgLamda1 = 0.0,
+		   avgLamda1Sq = 0.0,
 		   avgLamda2 = 0.0,
+		   avgLamda2Sq = 0.0,
 		   avgAsphericity = 0.0,
-		   avgRadiusOfGyration = 0.0;
+		   avgAsphericitySq = 0.0,
+		   avgRadiusOfGyration = 0.0,
+		   avgRadiusOfGyrationSq = 0.0;
 
 	// final standard deviations
 	double sdSquareEndToEndDistance = 0.0,
@@ -70,6 +74,16 @@ int main()
 		samples[i] = p;
 		samples[i]->addBeads(beadAmt - 1);
 	}
+
+	for(int i = 0; i < sampleAmt; i++)
+	{
+		counter1 += samples[i]->counter1;
+		counter2 += samples[i]->counter2;
+		counter3 += samples[i]->counter3;
+		counter4 += samples[i]->counter4;
+	}
+
+	cout << counter1 << "\n" << counter2 << "\n" << counter3 << "\n" << counter4;
 
 	// Gets the average of various properties.
 	for(int i = 0; i < sampleAmt; i++)
@@ -106,6 +120,7 @@ int main()
 
 	// Reset sums for use again
 	sum = 0.0;
+	sum2 = 0.0;
 	sumxcm = 0.0;
 	sumycm = 0.0;
 
@@ -117,29 +132,23 @@ int main()
 	for(int i = 0; i < sampleAmt; i++)
 	{
 		sum += samples[i]->getLamda1();
+		sum2 += pow(samples[i]->getLamda1(), 2.0);
 		sumxcm += samples[i]->getLamda2();
+		sumycm += pow(samples[i]->getLamda2(), 2.0);
 	}
 
-	avgLamda1 = sum /sampleAmt;
+	avgLamda1 = sum / sampleAmt;
+	avgLamda1Sq = sum2 / sampleAmt;
 	avgLamda2 = sumxcm / sampleAmt;
+	avgLamda2Sq = sumycm / sampleAmt;
+
+	// Standard deviation of lamda1 and lamda2
+	sdLamda1 = sqrt((avgLamda1Sq - avgLamda1 * avgLamda1) / (sampleAmt - 1));
+	sdLamda2 = sqrt((avgLamda2Sq - avgLamda2 * avgLamda2) / (sampleAmt - 1));
 
 	// Reset sums for use again
 	sum = 0.0;
-	sumxcm = 0.0;
-	sumycm = 0.0;
-
-	// Gets the standard deviation of the mean of lamdas
-	for(int i = 0; i < sampleAmt; i++)
-	{
-		sumxcm += (pow((samples[i]->getLamda1() - avgLamda1), 2) / (beadAmt * (beadAmt - 1)));
-		sumycm += (pow((samples[i]->getLamda2() - avgLamda2), 2) / (beadAmt * (beadAmt - 1)));
-	}
-
-	sdLamda1 = sqrt(sumxcm);
-	sdLamda2 = sqrt(sumycm);
-
-	// Reset sums for use again
-	sum = 0.0;
+	sum2 = 0.0;
 	sumxcm = 0.0;
 	sumycm = 0.0;
 
@@ -147,26 +156,19 @@ int main()
 	for(int i = 0; i < sampleAmt; i++)
 	{
 		sum += samples[i]->getAsphericity();
+		sum2 += pow(samples[i]->getAsphericity(), 2.0);
 		sumxcm += samples[i]->getRadiusofGyration();
+		sumycm += pow(samples[i]->getRadiusofGyration(), 2.0);
 	}
 
+	avgAsphericitySq = sum2 / sampleAmt;
 	avgAsphericity = sum / sampleAmt;
+	avgRadiusOfGyrationSq = sumycm / sampleAmt;
 	avgRadiusOfGyration = sumxcm / sampleAmt;
 
-	// Reset sums for use again
-	sum = 0.0;
-	sumxcm = 0.0;
-	sumycm = 0.0;
-
 	// Gets the standard deviation of the mean of asphericity and radius of gyration
-	for(int i = 0; i < sampleAmt; i++)
-	{
-		sumxcm += (pow((samples[i]->getAsphericity() - avgAsphericity), 2) / (beadAmt * (beadAmt - 1)));
-		sumycm += (pow((samples[i]->getRadiusofGyration() - avgRadiusOfGyration), 2) / (beadAmt * (beadAmt - 1)));
-	}
-
-	sdAsphericity = sqrt(sumxcm);
-	sdRadiusOfGyration = sqrt(sumycm);
+	sdAsphericity = sqrt((avgAsphericitySq - avgAsphericity * avgAsphericity) / (sampleAmt - 1));
+	sdRadiusOfGyration = sqrt((avgRadiusOfGyrationSq - avgRadiusOfGyration * avgRadiusOfGyration) / (sampleAmt - 1));
 
 	// Build output
 	outputFile.open("output.txt");
