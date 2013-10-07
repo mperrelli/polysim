@@ -20,8 +20,30 @@
 using namespace std;
 #include "sample.h"
 
+// Prototypes
+void outputHistogramData(int bins, int sampleAmt, sample* s[]);
+
+// Constants
 const int MAX_SAMPLES = 20000;
 
+///////////////////////////////////////////////////////////////////////
+//*                                                                 *//
+//*  Function:  Main                                                *//
+//*                                                                 *//
+///////////////////////////////////////////////////////////////////////
+//// Variables ////////////////////////////////////////////////////////
+//                                                                   //
+//  samples: The array that holds pointers to sample objects         //
+//                                                                   //
+//  outputFile: output datafile stream                               //
+//                                                                   //
+//  beadAmt: Bead amount                                             //
+//                                                                   //
+//  sampleAmt: sample amount                                         //
+//                                                                   //
+//  sum,sum2,sum3,sum4: temporary variables                          //
+//                                                                   //
+///////////////////////////////////////////////////////////////////////
 int main()
 {
 	// Defines a list of pointers to instances of the sample class
@@ -34,7 +56,7 @@ int main()
 	int beadAmt, sampleAmt, pause;
 
 	// Temporary variables
-	double sum = 0.0, sum2 = 0.0, sumxcm = 0.0, sumycm = 0.0;
+	double sum = 0.0, sum2 = 0.0, sum3 = 0.0, sum4 = 0.0;
 
 	// final avg vars
 	double avgSquareEndToEndDistance = 0.0,
@@ -75,27 +97,17 @@ int main()
 		samples[i]->addBeads(beadAmt - 1);
 	}
 
-	for(int i = 0; i < sampleAmt; i++)
-	{
-		counter1 += samples[i]->counter1;
-		counter2 += samples[i]->counter2;
-		counter3 += samples[i]->counter3;
-		counter4 += samples[i]->counter4;
-	}
-
-	cout << counter1 << "\n" << counter2 << "\n" << counter3 << "\n" << counter4;
-
 	// Gets the average of various properties.
 	for(int i = 0; i < sampleAmt; i++)
 	{
 		sum += samples[i]->getSquareEndToEndDistance();
-		sumxcm += samples[i]->getXCM();
-		sumycm += samples[i]->getYCM();
+		sum3 += samples[i]->getXCM();
+		sum4 += samples[i]->getYCM();
 	}
 
 	avgSquareEndToEndDistance = sum / sampleAmt;
-	avgXCM = sumxcm / sampleAmt;
-	avgYCM = sumycm / sampleAmt;
+	avgXCM = sum3 / sampleAmt;
+	avgYCM = sum4 / sampleAmt;
 
 	cout << "Average squared end to end distance: " << avgSquareEndToEndDistance << "\n";
 	cout << "Average center of x: " <<  avgXCM << "\n";
@@ -103,26 +115,26 @@ int main()
 
 	// Reset sums for use again
 	sum = 0.0;
-	sumxcm = 0.0;
-	sumycm = 0.0;
+	sum3 = 0.0;
+	sum4 = 0.0;
 
 	// Gets the standard deviation of the mean
 	for(int i = 0; i < sampleAmt; i++)
 	{
 		sum += (pow((samples[i]->getSquareEndToEndDistance() - avgSquareEndToEndDistance), 2) / (beadAmt - 1));
-		sumxcm += (pow((samples[i]->getXCM() - avgXCM), 2) / (beadAmt - 1));
-		sumycm += (pow((samples[i]->getYCM() - avgYCM), 2) / (beadAmt - 1));
+		sum3 += (pow((samples[i]->getXCM() - avgXCM), 2) / (beadAmt - 1));
+		sum4 += (pow((samples[i]->getYCM() - avgYCM), 2) / (beadAmt - 1));
 	}
 
 	sdSquareEndToEndDistance = sqrt(sum);
-	sdXCM = sqrt(sumxcm);
-	sdYCM = sqrt(sumycm);
+	sdXCM = sqrt(sum3);
+	sdYCM = sqrt(sum4);
 
 	// Reset sums for use again
 	sum = 0.0;
 	sum2 = 0.0;
-	sumxcm = 0.0;
-	sumycm = 0.0;
+	sum3 = 0.0;
+	sum4 = 0.0;
 
 	cout << "Standard deviation of mean of squared end to end distance: " << sdSquareEndToEndDistance << "\n";
 	cout << "Standard deviation of mean of center of x: " <<  sdXCM << "\n";
@@ -133,14 +145,14 @@ int main()
 	{
 		sum += samples[i]->getLamda1();
 		sum2 += pow(samples[i]->getLamda1(), 2.0);
-		sumxcm += samples[i]->getLamda2();
-		sumycm += pow(samples[i]->getLamda2(), 2.0);
+		sum3 += samples[i]->getLamda2();
+		sum4 += pow(samples[i]->getLamda2(), 2.0);
 	}
 
 	avgLamda1 = sum / sampleAmt;
 	avgLamda1Sq = sum2 / sampleAmt;
-	avgLamda2 = sumxcm / sampleAmt;
-	avgLamda2Sq = sumycm / sampleAmt;
+	avgLamda2 = sum3 / sampleAmt;
+	avgLamda2Sq = sum4 / sampleAmt;
 
 	// Standard deviation of lamda1 and lamda2
 	sdLamda1 = sqrt((avgLamda1Sq - avgLamda1 * avgLamda1) / (sampleAmt - 1));
@@ -149,22 +161,22 @@ int main()
 	// Reset sums for use again
 	sum = 0.0;
 	sum2 = 0.0;
-	sumxcm = 0.0;
-	sumycm = 0.0;
+	sum3 = 0.0;
+	sum4 = 0.0;
 
 	// gets average asphoricity and radius of gyration
 	for(int i = 0; i < sampleAmt; i++)
 	{
 		sum += samples[i]->getAsphericity();
 		sum2 += pow(samples[i]->getAsphericity(), 2.0);
-		sumxcm += samples[i]->getRadiusofGyration();
-		sumycm += pow(samples[i]->getRadiusofGyration(), 2.0);
+		sum3 += samples[i]->getRadiusofGyration();
+		sum4 += pow(samples[i]->getRadiusofGyration(), 2.0);
 	}
 
 	avgAsphericitySq = sum2 / sampleAmt;
 	avgAsphericity = sum / sampleAmt;
-	avgRadiusOfGyrationSq = sumycm / sampleAmt;
-	avgRadiusOfGyration = sumxcm / sampleAmt;
+	avgRadiusOfGyrationSq = sum4 / sampleAmt;
+	avgRadiusOfGyration = sum3 / sampleAmt;
 
 	// Gets the standard deviation of the mean of asphericity and radius of gyration
 	sdAsphericity = sqrt((avgAsphericitySq - avgAsphericity * avgAsphericity) / (sampleAmt - 1));
@@ -197,8 +209,87 @@ int main()
 
 	outputFile.close();
 
+	outputHistogramData(20, sampleAmt, samples);
+
 	// Wait
 	cin >> pause;
 
 	return 0;
+}
+
+///////////////////////////////////////////////////////////////////////
+//*                                                                 *//
+//*  Function:  outputHistogramData                                 *//
+//*                                                                 *//
+//*  Description:  Outputs a datafile for construction a histogram. *//
+//*                                                                 *//
+///////////////////////////////////////////////////////////////////////
+//// Variables ////////////////////////////////////////////////////////
+//                                                                   //
+//  MAX_BINS: max amount of bins                                     //
+//                                                                   //
+//  binSize: bin size                                                //
+//                                                                   //
+//  temp: temporary variable, hold asphericity                       //
+//                                                                   //
+//  histInfoFile: output file stream                                 //
+//                                                                   //
+//  range: array that holds the upper bounds for each bin            //
+//                                                                   //
+//  count: array that holds the count for each bin                   //
+//                                                                   //
+///////////////////////////////////////////////////////////////////////
+void outputHistogramData(int bins, int sampleAmt, sample* s[])
+{
+	const int MAX_BINS = 35;
+	double binSize = 1.0 / bins;
+	double temp;
+
+	cout << binSize;
+
+	// Output file stream
+	ofstream histInfoFile;
+
+	double range[MAX_BINS];
+	int count[MAX_BINS];
+
+	// Initialize arrays
+	for(int i = 1; i <= bins; i++)
+	{
+		count[i - 1] = 0;
+		range[i - 1] = (double)i * binSize;
+	}
+
+	// Build histogram data
+	for(int i = 0; i < sampleAmt; i++)
+	{
+		temp = s[i]->getAsphericity();
+
+		for(int j = 0; j < bins; j++)
+		{
+			if(temp <= range[j])
+			{
+				count[j]++;
+				break;
+			}
+		}
+	}
+
+	// Build output
+	histInfoFile.open("histogramInfo.txt");
+
+	if(histInfoFile.fail())
+	{
+		cout << "Failed to open histogram file.\n";
+		exit(1);
+	}
+
+	histInfoFile << "Bin\tFrequency\n";
+
+	for(int i = 0; i < bins; i++)
+	{
+		histInfoFile << range[i] << "\t" << count[i] << endl;
+	}
+
+	histInfoFile.close();
 }

@@ -24,7 +24,6 @@ sample::sample(void)
 	beadsX[beadCount] = 0;
 	beadsY[beadCount] = 0;
 	beadCount++;	
-	counter1 = 0, counter2 = 0, counter3 = 0, counter4 = 0;
 }
 
 // Destructor for a sample.
@@ -49,25 +48,21 @@ void sample::addBead()
 	case 1:
 		// Grow North
 		y = y + 1;
-		counter1++;
 		break;
 
 	case 2:
 		// Grow South
 		y = y - 1;
-		counter2++;
 		break;
 
 	case 3:
 		// Grow East
 		x = x + 1;
-		counter3++;
 		break;
 
 	case 4:
 		// Grow West
 		x = x - 1;
-		counter4++;
 		break;
 
 	default:;
