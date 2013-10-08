@@ -33,13 +33,14 @@ const int MAX_SAMPLES = 20000;
 ///////////////////////////////////////////////////////////////////////
 //// Variables ////////////////////////////////////////////////////////
 //                                                                   //
-//  samples: The array that holds pointers to sample objects         //
+//  samples:            The array that holds pointers to sample      //
+//                      objects                                      //
 //                                                                   //
-//  outputFile: output datafile stream                               //
+//  outputFile:         output datafile stream                       //
 //                                                                   //
-//  beadAmt: Bead amount                                             //
+//  beadAmt:            Bead amount                                  //
 //                                                                   //
-//  sampleAmt: sample amount                                         //
+//  sampleAmt:          sample amount                                //
 //                                                                   //
 //  sum,sum2,sum3,sum4: temporary variables                          //
 //                                                                   //
@@ -59,9 +60,8 @@ int main()
 	double sum = 0.0, sum2 = 0.0, sum3 = 0.0, sum4 = 0.0;
 
 	// final avg vars
-	double avgSquareEndToEndDistance = 0.0,
-		   avgXCM = 0.0,
-		   avgYCM = 0.0,
+	double avgSquareEndToEndDist = 0.0,
+		   avgSquareEndToEndDistSq = 0.0,
 		   avgLamda1 = 0.0,
 		   avgLamda1Sq = 0.0,
 		   avgLamda2 = 0.0,
@@ -72,9 +72,7 @@ int main()
 		   avgRadiusOfGyrationSq = 0.0;
 
 	// final standard deviations
-	double sdSquareEndToEndDistance = 0.0,
-		   sdXCM = 0.0,
-		   sdYCM = 0.0,
+	double sdSquareEndToEndDist = 0.0,
 		   sdLamda1 = 0.0,
 		   sdLamda2 = 0.0,
 		   sdAsphericity = 0.0,
@@ -82,6 +80,7 @@ int main()
 
 	// Set format
 	cout.setf(ios::fixed);
+	outputFile.setf(ios::fixed);
 
 	// User input
 	cout << "Bead Amount: ";
@@ -97,48 +96,27 @@ int main()
 		samples[i]->addBeads(beadAmt - 1);
 	}
 
-	// Gets the average of various properties.
+	// Gets the average of the squared End to End distance properties.
 	for(int i = 0; i < sampleAmt; i++)
 	{
-		sum += samples[i]->getSquareEndToEndDistance();
-		sum3 += samples[i]->getXCM();
-		sum4 += samples[i]->getYCM();
+		sum += samples[i]->getSquareEndToEndDist();
+		sum2 += pow(samples[i]->getSquareEndToEndDist(), 2.0);
 	}
 
-	avgSquareEndToEndDistance = sum / sampleAmt;
-	avgXCM = sum3 / sampleAmt;
-	avgYCM = sum4 / sampleAmt;
-
-	cout << "Average squared end to end distance: " << avgSquareEndToEndDistance << "\n";
-	cout << "Average center of x: " <<  avgXCM << "\n";
-	cout << "Average center of y: " <<  avgYCM << "\n";
+	avgSquareEndToEndDist = sum / sampleAmt;
+	avgSquareEndToEndDistSq = sum2 / sampleAmt;
 
 	// Reset sums for use again
 	sum = 0.0;
-	sum3 = 0.0;
-	sum4 = 0.0;
 
-	// Gets the standard deviation of the mean
-	for(int i = 0; i < sampleAmt; i++)
-	{
-		sum += (pow((samples[i]->getSquareEndToEndDistance() - avgSquareEndToEndDistance), 2) / (beadAmt - 1));
-		sum3 += (pow((samples[i]->getXCM() - avgXCM), 2) / (beadAmt - 1));
-		sum4 += (pow((samples[i]->getYCM() - avgYCM), 2) / (beadAmt - 1));
-	}
-
-	sdSquareEndToEndDistance = sqrt(sum);
-	sdXCM = sqrt(sum3);
-	sdYCM = sqrt(sum4);
+	// Gets the standard deviation of the squared End to End distance
+	sdSquareEndToEndDist = sqrt((avgSquareEndToEndDistSq - 
+		                         avgSquareEndToEndDist * avgSquareEndToEndDist)
+								 / (sampleAmt - 1));
 
 	// Reset sums for use again
 	sum = 0.0;
 	sum2 = 0.0;
-	sum3 = 0.0;
-	sum4 = 0.0;
-
-	cout << "Standard deviation of mean of squared end to end distance: " << sdSquareEndToEndDistance << "\n";
-	cout << "Standard deviation of mean of center of x: " <<  sdXCM << "\n";
-	cout << "Standard deviation of mean of center of y: " <<  sdYCM << "\n";
 
 	// Gets average lamda1 and lamda2
 	for(int i = 0; i < sampleAmt; i++)
@@ -164,7 +142,7 @@ int main()
 	sum3 = 0.0;
 	sum4 = 0.0;
 
-	// gets average asphoricity and radius of gyration
+	// gets average asphericity and radius of gyration
 	for(int i = 0; i < sampleAmt; i++)
 	{
 		sum += samples[i]->getAsphericity();
@@ -179,8 +157,25 @@ int main()
 	avgRadiusOfGyration = sum3 / sampleAmt;
 
 	// Gets the standard deviation of the mean of asphericity and radius of gyration
-	sdAsphericity = sqrt((avgAsphericitySq - avgAsphericity * avgAsphericity) / (sampleAmt - 1));
-	sdRadiusOfGyration = sqrt((avgRadiusOfGyrationSq - avgRadiusOfGyration * avgRadiusOfGyration) / (sampleAmt - 1));
+	sdAsphericity = sqrt((avgAsphericitySq - avgAsphericity * avgAsphericity) / 
+				         (sampleAmt - 1));
+	sdRadiusOfGyration = sqrt((avgRadiusOfGyrationSq - avgRadiusOfGyration *
+		                       avgRadiusOfGyration) / (sampleAmt - 1));
+
+	// Output data to screen
+	cout << "\n\nQuantity" << setw(13) << "Average" << setw(27) 
+		 << "Standard Deviation\n";
+	cout << "-----------------------------------------------\n";
+	cout << "Lamda1  " << setw(15) << setprecision(6) << avgLamda1 
+		               << setw(18) << setprecision(6) << sdLamda1 << endl;
+	cout << "Lamda2  " << setw(15) << setprecision(6) << avgLamda2 
+					   << setw(18) << setprecision(6) << sdLamda2 << endl;
+	cout << "s^2     " << setw(15) << setprecision(6) << avgRadiusOfGyration 
+		               << setw(18) << setprecision(6) << sdRadiusOfGyration << endl;
+	cout << "A       " << setw(15) << setprecision(6) << avgAsphericity 
+		               << setw(18) << setprecision(6) << sdAsphericity << endl;
+	cout << "R^2     " << setw(15) << setprecision(6) << avgSquareEndToEndDist 
+		               << setw(18) << setprecision(6) << sdSquareEndToEndDist << endl;
 
 	// Build output
 	outputFile.open("output.txt");
@@ -191,20 +186,16 @@ int main()
 		exit(1);
 	}
 
-	cout << "\n\nQuantity" << setw(13) << "Average" << setw(27) << "Standard Deviation\n";
-	cout << "-----------------------------------------------\n";
-	cout << "Lamda1  " << setw(15) << setprecision(6) << avgLamda1 << setw(18) << setprecision(6) << sdLamda1 << endl;
-	cout << "Lamda2  " << setw(15) << setprecision(6) << avgLamda2 << setw(18) << setprecision(6) << sdLamda2 << endl;
-	cout << "s^2     " << setw(15) << setprecision(6) << avgRadiusOfGyration << setw(18) << setprecision(6) << sdRadiusOfGyration << endl;
-	cout << "A       " << setw(15) << setprecision(6) << avgAsphericity << setw(18) << setprecision(6) << sdAsphericity << endl;
-
-	outputFile << "Lamda1\tLamda2\ts^2\tA\n";
+	outputFile << "Lamda1" << setw(12) << "Lamda2" << setw(12) << "s^2" << setw(12) << "A" << setw(12) << "R^2\n";
 
 	for(int i = 0; i < sampleAmt; i++)
 	{
-		outputFile << samples[i]->getLamda1() << "\t" << samples[i]->getLamda2()
-			<< "\t" << samples[i]->getRadiusofGyration() << "\t" << samples[i]->getAsphericity()
-			<< endl;
+		outputFile << samples[i]->getLamda1() << setw(12) << setprecision(6) 
+			       << samples[i]->getLamda2() << setw(12) << setprecision(6) 
+				   << samples[i]->getRadiusofGyration() << setw(12) << setprecision(6) 
+				   << samples[i]->getAsphericity() << setw(12) << setprecision(6) 
+				   << samples[i]->getSquareEndToEndDist()
+				   << endl;
 	}
 
 	outputFile.close();
@@ -226,17 +217,17 @@ int main()
 ///////////////////////////////////////////////////////////////////////
 //// Variables ////////////////////////////////////////////////////////
 //                                                                   //
-//  MAX_BINS: max amount of bins                                     //
+//  MAX_BINS:     max amount of bins                                 //
 //                                                                   //
-//  binSize: bin size                                                //
+//  binSize:      bin size                                           //
 //                                                                   //
-//  temp: temporary variable, hold asphericity                       //
+//  temp:         temporary variable, hold asphericity               //
 //                                                                   //
 //  histInfoFile: output file stream                                 //
 //                                                                   //
-//  range: array that holds the upper bounds for each bin            //
+//  range:        array that holds the upper bounds for each bin     //
 //                                                                   //
-//  count: array that holds the count for each bin                   //
+//  count:        array that holds the count for each bin            //
 //                                                                   //
 ///////////////////////////////////////////////////////////////////////
 void outputHistogramData(int bins, int sampleAmt, sample* s[])
@@ -244,8 +235,6 @@ void outputHistogramData(int bins, int sampleAmt, sample* s[])
 	const int MAX_BINS = 35;
 	double binSize = 1.0 / bins;
 	double temp;
-
-	cout << binSize;
 
 	// Output file stream
 	ofstream histInfoFile;

@@ -19,11 +19,12 @@ private:
 	int beadCount;
 
 	double XCM, YCM, tensor11, tensor12, tensor22, lamda1, lamda2, 
-		asphericity, radiusofGyration;
+		asphericity, radiusofGyration, squareEndToEndDist;
 
 	void runCalculations();
 
 	// Calculation functions
+	double calculateSquareEndToEndDist();
 	double calculateXCM();
 	double calculateYCM();
 	double calculateTensor11();
@@ -45,7 +46,7 @@ public:
 
 	// Gets and sets
 	int getBeadCount();
-	double getSquareEndToEndDistance();
+	double getSquareEndToEndDist();
 	double getXCM();
 	double getYCM();
 	double getTensor11();

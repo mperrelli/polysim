@@ -96,7 +96,7 @@ int sample::getBeadCount()
 // the coordinate distance formula on the first and last beads
 // in a sample.
 //
-double sample::getSquareEndToEndDistance()
+double sample::calculateSquareEndToEndDist()
 {
 	int x1 = beadsX[0];
 	int y1 = beadsY[0];
@@ -105,10 +105,10 @@ double sample::getSquareEndToEndDistance()
 
 	double distance = ((x2 - x1)*(x2 - x1)) + ((y2 - y1)*(y2 - y1));
 
-	return sqrt(distance);
+	return distance;
 }
 
-// Returns average X coordinate accross all beads
+// Returns average X coordinate across all beads
 // Shows us the X coordinate for the center of mass
 // of our sample.
 //
@@ -194,7 +194,7 @@ double sample::calculateTensor22()
 }
 
 // Returns Lamda1 which is the distance from the center of mass to the encompassing
-// circle on the x-axis around the sample
+// ellipse on the major axis around the sample
 //
 double sample::calculateLamda1()
 {
@@ -208,7 +208,7 @@ double sample::calculateLamda1()
 }
 
 // Returns Lamda2 which is the distance from the center of mass to the encompassing
-// circle on the y-axis around the sample
+// ellipse on the minor axis around the sample
 //
 double sample::calculateLamda2()
 {
@@ -245,6 +245,7 @@ double sample::calculateRadiusofGyration()
 //
 void sample::runCalculations()
 {
+	squareEndToEndDist = calculateSquareEndToEndDist();
 	XCM = calculateXCM();
 	YCM = calculateYCM();
 	tensor11 = calculateTensor11();
@@ -272,6 +273,10 @@ void sample::runCalculations()
 }
 
 // Below this point are all get functions
+double sample::getSquareEndToEndDist()
+{
+	return squareEndToEndDist;
+}
 
 double sample::getXCM()
 {
