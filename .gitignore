@@ -25,7 +25,6 @@
 *.log
 *.sql
 *.sqlite
-*.txt
 
 # OS generated files #
 ######################
@@ -41,8 +40,13 @@ Thumbs.db
 #######################
 polysim.ncb
 polysim.suo
+*.vcproj
 
 # Folders #
 ###########
 \debug
 \importcode
+
+# Output files #
+################
+*.txt
