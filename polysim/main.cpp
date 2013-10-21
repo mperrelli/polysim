@@ -21,10 +21,15 @@ using namespace std;
 #include "sample.h"
 
 // Prototypes
-void outputHistogramData(int bins, int sampleAmt, sample* s[]);
+void outputHistogramData(int bins, int sampleAmt, sample* s[], int data);
+double getMaxof(int data, sample* s[], int sampleAmt);
 
 // Constants
 const int MAX_SAMPLES = 20000;
+
+const int ASPHERICITY = 1;
+const int RADIUSOFGYRATION = 2;
+const int SQENDTOENDDIST = 3;
 
 ///////////////////////////////////////////////////////////////////////
 //*                                                                 *//
@@ -200,7 +205,7 @@ int main()
 
 	outputFile.close();
 
-	outputHistogramData(20, sampleAmt, samples);
+	outputHistogramData(20, sampleAmt, samples, RADIUSOFGYRATION);
 
 	// Wait
 	cin >> pause;
@@ -230,10 +235,10 @@ int main()
 //  count:        array that holds the count for each bin            //
 //                                                                   //
 ///////////////////////////////////////////////////////////////////////
-void outputHistogramData(int bins, int sampleAmt, sample* s[])
+void outputHistogramData(int bins, int sampleAmt, sample* s[], int data)
 {
 	const int MAX_BINS = 35;
-	double binSize = 1.0 / bins;
+	double binSize = getMaxof(data, s, sampleAmt) / bins;
 	double temp;
 
 	// Output file stream
@@ -250,18 +255,59 @@ void outputHistogramData(int bins, int sampleAmt, sample* s[])
 	}
 
 	// Build histogram data
-	for(int i = 0; i < sampleAmt; i++)
+	switch(data)
 	{
-		temp = s[i]->getAsphericity();
+	case ASPHERICITY:
 
-		for(int j = 0; j < bins; j++)
+		for(int i = 0; i < sampleAmt; i++)
 		{
-			if(temp <= range[j])
+			temp = s[i]->getAsphericity();
+
+			for(int j = 0; j < bins; j++)
 			{
-				count[j]++;
-				break;
+				if(temp <= range[j])
+				{
+					count[j]++;
+					break;
+				}
 			}
 		}
+
+		break;
+	case RADIUSOFGYRATION:
+
+		for(int i = 0; i < sampleAmt; i++)
+		{
+			temp = s[i]->getRadiusofGyration();
+
+			for(int j = 0; j < bins; j++)
+			{
+				if(temp <= range[j])
+				{
+					count[j]++;
+					break;
+				}
+			}
+		}
+
+		break;
+	case SQENDTOENDDIST:
+
+		for(int i = 0; i < sampleAmt; i++)
+		{
+			temp = s[i]->getSquareEndToEndDist();
+
+			for(int j = 0; j < bins; j++)
+			{
+				if(temp <= range[j])
+				{
+					count[j]++;
+					break;
+				}
+			}
+		}
+
+		break;
 	}
 
 	// Build output
@@ -281,4 +327,49 @@ void outputHistogramData(int bins, int sampleAmt, sample* s[])
 	}
 
 	histInfoFile.close();
+}
+
+double getMaxof(int data, sample* s[], int sampleAmt)
+{
+	double max = 0;
+
+	switch(data)
+	{
+	case ASPHERICITY:
+
+		for(int i = 0; i < sampleAmt; i++)
+		{
+			if(s[i]->getAsphericity() > max)
+			{
+				max = s[i]->getAsphericity();
+			}
+		}
+
+		break;
+	case RADIUSOFGYRATION:
+
+		for(int i = 0; i < sampleAmt; i++)
+		{
+			if(s[i]->getRadiusofGyration() > max)
+			{
+				max = s[i]->getRadiusofGyration();
+			}
+		}
+
+		break;
+
+	case SQENDTOENDDIST:
+
+		for(int i = 0; i < sampleAmt; i++)
+		{
+			if(s[i]->getSquareEndToEndDist() > max)
+			{
+				max = s[i]->getSquareEndToEndDist();
+			}
+		}
+
+		break;
+	}
+
+	return max;
 }
