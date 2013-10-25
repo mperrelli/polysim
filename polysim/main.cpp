@@ -17,6 +17,7 @@
 #include <cmath>
 #include <fstream>
 #include <iomanip>
+#include <string>
 using namespace std;
 #include "sample.h"
 
@@ -30,6 +31,8 @@ const int MAX_SAMPLES = 20000;
 const int ASPHERICITY = 1;
 const int RADIUSOFGYRATION = 2;
 const int SQENDTOENDDIST = 3;
+const int LAMDA1 = 4;
+const int LAMDA2 = 5;
 
 ///////////////////////////////////////////////////////////////////////
 //*                                                                 *//
@@ -111,13 +114,10 @@ int main()
 	avgSquareEndToEndDist = sum / sampleAmt;
 	avgSquareEndToEndDistSq = sum2 / sampleAmt;
 
-	// Reset sums for use again
-	sum = 0.0;
-
 	// Gets the standard deviation of the squared End to End distance
 	sdSquareEndToEndDist = sqrt((avgSquareEndToEndDistSq - 
-		                         avgSquareEndToEndDist * avgSquareEndToEndDist)
-								 / (sampleAmt - 1));
+		                   avgSquareEndToEndDist * avgSquareEndToEndDist)
+						   / (sampleAmt - 1));
 
 	// Reset sums for use again
 	sum = 0.0;
@@ -138,8 +138,10 @@ int main()
 	avgLamda2Sq = sum4 / sampleAmt;
 
 	// Standard deviation of lamda1 and lamda2
-	sdLamda1 = sqrt((avgLamda1Sq - avgLamda1 * avgLamda1) / (sampleAmt - 1));
-	sdLamda2 = sqrt((avgLamda2Sq - avgLamda2 * avgLamda2) / (sampleAmt - 1));
+	sdLamda1 = sqrt((avgLamda1Sq - avgLamda1 * avgLamda1) 
+			   / (sampleAmt - 1));
+	sdLamda2 = sqrt((avgLamda2Sq - avgLamda2 * avgLamda2) 
+		       / (sampleAmt - 1));
 
 	// Reset sums for use again
 	sum = 0.0;
@@ -161,26 +163,38 @@ int main()
 	avgRadiusOfGyrationSq = sum4 / sampleAmt;
 	avgRadiusOfGyration = sum3 / sampleAmt;
 
-	// Gets the standard deviation of the mean of asphericity and radius of gyration
-	sdAsphericity = sqrt((avgAsphericitySq - avgAsphericity * avgAsphericity) / 
-				         (sampleAmt - 1));
-	sdRadiusOfGyration = sqrt((avgRadiusOfGyrationSq - avgRadiusOfGyration *
-		                       avgRadiusOfGyration) / (sampleAmt - 1));
+	// Gets the standard deviation of the mean of asphericity and radius of
+	// gyration
+	sdAsphericity = sqrt((avgAsphericitySq - avgAsphericity 
+		            * avgAsphericity) / (sampleAmt - 1));
+	sdRadiusOfGyration = sqrt((avgRadiusOfGyrationSq - 
+				         avgRadiusOfGyration * avgRadiusOfGyration) 
+						 / (sampleAmt - 1));
 
 	// Output data to screen
+	cout << endl;
+	cout << "Beads: " << beadAmt << endl;
+	cout << "Samples: " << sampleAmt << endl;
 	cout << "\n\nQuantity" << setw(13) << "Average" << setw(27) 
 		 << "Standard Deviation\n";
 	cout << "-----------------------------------------------\n";
 	cout << "Lamda1  " << setw(15) << setprecision(6) << avgLamda1 
-		               << setw(18) << setprecision(6) << sdLamda1 << endl;
+		               << setw(18) << setprecision(6) << sdLamda1 
+					   << endl;
 	cout << "Lamda2  " << setw(15) << setprecision(6) << avgLamda2 
-					   << setw(18) << setprecision(6) << sdLamda2 << endl;
-	cout << "s^2     " << setw(15) << setprecision(6) << avgRadiusOfGyration 
-		               << setw(18) << setprecision(6) << sdRadiusOfGyration << endl;
+					   << setw(18) << setprecision(6) << sdLamda2 
+					   << endl;
+	cout << "s^2     " << setw(15) << setprecision(6) 
+					   << avgRadiusOfGyration 
+		               << setw(18) << setprecision(6) 
+					   << sdRadiusOfGyration << endl;
 	cout << "A       " << setw(15) << setprecision(6) << avgAsphericity 
-		               << setw(18) << setprecision(6) << sdAsphericity << endl;
-	cout << "R^2     " << setw(15) << setprecision(6) << avgSquareEndToEndDist 
-		               << setw(18) << setprecision(6) << sdSquareEndToEndDist << endl;
+		               << setw(18) << setprecision(6) << sdAsphericity 
+					   << endl;
+	cout << "R^2     " << setw(15) << setprecision(6) 
+		               << avgSquareEndToEndDist 
+		               << setw(18) << setprecision(6) 
+					   << sdSquareEndToEndDist << endl;
 
 	// Build output
 	outputFile.open("output.txt");
@@ -191,21 +205,55 @@ int main()
 		exit(1);
 	}
 
-	outputFile << "Lamda1" << setw(12) << "Lamda2" << setw(12) << "s^2" << setw(12) << "A" << setw(12) << "R^2\n";
+	outputFile << "Beads: " << beadAmt << endl;
+	outputFile << "Samples: " << sampleAmt << endl;
+
+	outputFile << "\n\nQuantity" << setw(13) << "Average" << setw(27) 
+		 << "Standard Deviation\n";
+	outputFile << "-----------------------------------------------\n";
+	outputFile << "Lamda1  " << setw(15) << setprecision(6) << avgLamda1 
+		               << setw(18) << setprecision(6) << sdLamda1 
+					   << endl;
+	outputFile << "Lamda2  " << setw(15) << setprecision(6) << avgLamda2 
+					   << setw(18) << setprecision(6) << sdLamda2 
+					   << endl;
+	outputFile << "s^2     " << setw(15) << setprecision(6) 
+					   << avgRadiusOfGyration 
+		               << setw(18) << setprecision(6) 
+					   << sdRadiusOfGyration << endl;
+	outputFile << "A       " << setw(15) << setprecision(6) << avgAsphericity 
+		               << setw(18) << setprecision(6) << sdAsphericity 
+					   << endl;
+	outputFile << "R^2     " << setw(15) << setprecision(6) 
+		               << avgSquareEndToEndDist 
+		               << setw(18) << setprecision(6) 
+					   << sdSquareEndToEndDist << endl << endl;
+
+	outputFile << "Lamda1" << "\t" << "Lamda2" << "\t" 
+		       << "s^2" << "\t" << "A" << "\t" << "R^2\n";
 
 	for(int i = 0; i < sampleAmt; i++)
 	{
-		outputFile << samples[i]->getLamda1() << setw(12) << setprecision(6) 
-			       << samples[i]->getLamda2() << setw(12) << setprecision(6) 
-				   << samples[i]->getRadiusofGyration() << setw(12) << setprecision(6) 
-				   << samples[i]->getAsphericity() << setw(12) << setprecision(6) 
+		outputFile << samples[i]->getLamda1() << "\t" 
+			       << setprecision(6) 
+			       << samples[i]->getLamda2() << "\t" 
+				   << setprecision(6) 
+				   << samples[i]->getRadiusofGyration() << "\t" 
+				   << setprecision(6) 
+				   << samples[i]->getAsphericity() << "\t" 
+				   << setprecision(6) 
 				   << samples[i]->getSquareEndToEndDist()
 				   << endl;
 	}
 
 	outputFile.close();
 
+	// Output the histrogram data for all quantities
 	outputHistogramData(20, sampleAmt, samples, RADIUSOFGYRATION);
+	outputHistogramData(20, sampleAmt, samples, SQENDTOENDDIST);
+	outputHistogramData(20, sampleAmt, samples, ASPHERICITY);
+	outputHistogramData(20, sampleAmt, samples, LAMDA1);
+	outputHistogramData(20, sampleAmt, samples, LAMDA2);
 
 	// Wait
 	cin >> pause;
@@ -273,6 +321,8 @@ void outputHistogramData(int bins, int sampleAmt, sample* s[], int data)
 			}
 		}
 
+		histInfoFile.open("AsphericityHistData.txt");
+
 		break;
 	case RADIUSOFGYRATION:
 
@@ -289,6 +339,8 @@ void outputHistogramData(int bins, int sampleAmt, sample* s[], int data)
 				}
 			}
 		}
+
+		histInfoFile.open("ROGHistData.txt");
 
 		break;
 	case SQENDTOENDDIST:
@@ -307,11 +359,52 @@ void outputHistogramData(int bins, int sampleAmt, sample* s[], int data)
 			}
 		}
 
+		histInfoFile.open("SQEndToEndDistHistData.txt");
+
+		break;
+
+	case LAMDA1:
+
+		for(int i = 0; i < sampleAmt; i++)
+		{
+			temp = s[i]->getLamda1();
+
+			for(int j = 0; j < bins; j++)
+			{
+				if(temp <= range[j])
+				{
+					count[j]++;
+					break;
+				}
+			}
+		}
+
+		histInfoFile.open("Lamda1HistData.txt");
+
+		break;
+
+	case LAMDA2:
+
+		for(int i = 0; i < sampleAmt; i++)
+		{
+			temp = s[i]->getLamda2();
+
+			for(int j = 0; j < bins; j++)
+			{
+				if(temp <= range[j])
+				{
+					count[j]++;
+					break;
+				}
+			}
+		}
+
+		histInfoFile.open("Lamda2HistData.txt");
+
 		break;
 	}
 
 	// Build output
-	histInfoFile.open("histogramInfo.txt");
 
 	if(histInfoFile.fail())
 	{
@@ -365,6 +458,30 @@ double getMaxof(int data, sample* s[], int sampleAmt)
 			if(s[i]->getSquareEndToEndDist() > max)
 			{
 				max = s[i]->getSquareEndToEndDist();
+			}
+		}
+
+		break;
+
+	case LAMDA1:
+
+		for(int i = 0; i < sampleAmt; i++)
+		{
+			if(s[i]->getLamda1() > max)
+			{
+				max = s[i]->getLamda1();
+			}
+		}
+
+		break;
+
+	case LAMDA2:
+
+		for(int i = 0; i < sampleAmt; i++)
+		{
+			if(s[i]->getLamda2() > max)
+			{
+				max = s[i]->getLamda2();
 			}
 		}
 

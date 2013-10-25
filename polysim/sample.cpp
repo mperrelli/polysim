@@ -193,28 +193,30 @@ double sample::calculateTensor22()
 	return sum;
 }
 
-// Returns Lamda1 which is the distance from the center of mass to the encompassing
-// ellipse on the major axis around the sample
+// Returns Lamda1 which is the distance from the center of mass to the
+// encompassing ellipse on the major axis around the sample
 //
 double sample::calculateLamda1()
 {
 	double a = tensor11, b = tensor12, c = tensor22, lamda, factor;
 
-	factor = (1.0 / 2) * sqrt((a*a) - (2 * a * c) + (c * c) + ((4 * (b * b))));
+	factor = (1.0 / 2) * sqrt((a*a) - (2 * a * c) + (c * c) 
+		     + ((4 * (b * b))));
 
 	lamda = ((a + c) / 2) + factor;
 
 	return lamda;
 }
 
-// Returns Lamda2 which is the distance from the center of mass to the encompassing
-// ellipse on the minor axis around the sample
+// Returns Lamda2 which is the distance from the center of mass to the
+// encompassing ellipse on the minor axis around the sample
 //
 double sample::calculateLamda2()
 {
 	double a = tensor11, b = tensor12, c = tensor22, lamda, factor;
 
-	factor = (1.0 / 2) * sqrt((a*a) - (2 * a * c) + (c * c) + ((4 * (b * b))));
+	factor = (1.0 / 2) * sqrt((a*a) - (2 * a * c) + (c * c) 
+		     + ((4 * (b * b))));
 
 	lamda = ((a + c) / 2) - factor;
 
@@ -227,7 +229,8 @@ double sample::calculateAsphericity()
 {
 	double asphericity;
 
-	asphericity = pow((lamda1 - lamda2), 2.0) / pow((lamda2 + lamda1), 2.0);
+	asphericity = pow((lamda1 - lamda2), 2.0) 
+		          / pow((lamda2 + lamda1), 2.0);
 
 	return asphericity;
 }

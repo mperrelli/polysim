@@ -15,7 +15,6 @@ class sample
 private:
 	int beadsX[MAX_BEADS];
 	int beadsY[MAX_BEADS];
-
 	int beadCount;
 
 	double XCM, YCM, tensor11, tensor12, tensor22, lamda1, lamda2, 
