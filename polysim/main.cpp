@@ -98,6 +98,8 @@ int main()
 	cout.setf(ios::fixed);
 	outputFile.setf(ios::fixed);
 
+	cout << "Linear Polymer Simulation\n\n";
+
 	// User input
 	cout << "Bead Amount: ";
 	cin >> beadAmt;
