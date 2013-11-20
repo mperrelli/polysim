@@ -18,6 +18,7 @@
 #include <fstream>
 #include <iomanip>
 #include <string>
+#include <ctime>
 using namespace std;
 #include "sample.h"
 
@@ -26,7 +27,7 @@ void outputHistogramData(int bins, int sampleAmt, sample* s[], int data);
 double getMaxof(int data, sample* s[], int sampleAmt);
 
 // Constants
-const int MAX_SAMPLES = 20000;
+const int MAX_SAMPLES = 100000;
 
 const int ASPHERICITY = 1;
 const int RADIUSOFGYRATION = 2;
@@ -55,6 +56,13 @@ const int LAMDA2 = 5;
 ///////////////////////////////////////////////////////////////////////
 int main()
 {
+	// Set timeing information
+	int tStart, tEnd;
+	double elapsedTime;
+	
+	// Start timing
+	tStart = clock();
+
 	// Defines a list of pointers to instances of the sample class
 	sample* samples[MAX_SAMPLES];
 
@@ -254,6 +262,12 @@ int main()
 	outputHistogramData(20, sampleAmt, samples, ASPHERICITY);
 	outputHistogramData(20, sampleAmt, samples, LAMDA1);
 	outputHistogramData(20, sampleAmt, samples, LAMDA2);
+
+	// Calculate time
+	tEnd = clock();
+	elapsedTime = static_cast<double>(tEnd - tStart)/CLOCKS_PER_SEC;
+
+	cout << "\nTotal Time(seconds): " << elapsedTime;
 
 	// Wait
 	cin >> pause;
